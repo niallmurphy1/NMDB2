@@ -58,9 +58,13 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
     private boolean userIDsFetched;
 
+    private List<String> movieKeys;
+
 
     public FirebaseDatabase database = FirebaseDatabase.getInstance();
     public DatabaseReference userFavMovies;
+
+    private DatabaseReference userMovies;
 
     public DatabaseReference dataRef;
     public FirebaseAuth fAuth = FirebaseAuth.getInstance();
@@ -81,6 +85,7 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
         //get user-favmovieids  from firebase
         userFavMovies = database.getReference("User").child(userId).child("user-likedMovies");
 
+        userMovies = database.getReference("Movie");
         //needs to be done synchronous
 
         //TODO: Get API to be called so that RCV is populated with movies
@@ -94,6 +99,78 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 //
 //         }
 //    }
+
+    public void retrieveMoviesFromFB(){
+
+
+        userMovies.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                movies.clear();
+
+
+                for(DataSnapshot keyNode: snapshot.getChildren()){
+
+                    for(int i = 0; i< movieKeys.size(); i ++){
+
+                        if(movieKeys.get(i).equals(keyNode.getKey())){
+
+                            Movie movie = keyNode.getValue(Movie.class);
+                            movies.add(movie);
+                        }
+                    }
+                }
+
+
+                System.out.println(movies.toString());
+
+                adapter.setMovieData(movies);
+                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getlikedMoviesFromFirebase(){
+        userFavMovies.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                movieIDsint.clear();
+               movieKeys = new ArrayList<>();
+
+                for(DataSnapshot keyNode: snapshot.getChildren()){
+
+                    movieKeys.add(keyNode.getKey());
+
+                    int movieId = keyNode.getValue(Integer.class);
+
+                    movieIDsint.add(movieId);
+
+                    //System.out.println( "Movie IDs" + movieIDsint.toString());
+                }
+
+                System.out.println( "Movie IDs" + movieIDsint.toString());
+                System.out.println("List of user-likedMovie IDs without duplicates" + removeDuplicates(movieIDsint));
+
+                userIDsFetched = true;
+
+                retrieveMoviesFromFB();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+                System.out.println("There was an error : " + error);
+            }
+        });
+    }
 
 
     private void loadMoviesIntRCV() {
@@ -113,6 +190,9 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
             public void onResponse(String response) {
 
                 System.out.println("Movie Array " +   response);
+
+                List<String> movieKeys = new ArrayList<>();
+
 
                 try {
 
@@ -143,7 +223,7 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
 
 
-                    System.out.println(movies);
+                   // System.out.println(movies);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -158,9 +238,9 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
             @Override
             public void onError(ANError anError) {
 
+                System.out.println("error");
             }
         });
-
 
 
         }
@@ -169,38 +249,6 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
     }
 
 
-    public void getlikedMoviesFromFirebase(){
-        userFavMovies.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                movieIDsint.clear();
-                List<String> movieKeys = new ArrayList<>();
-
-                for(DataSnapshot keyNode: snapshot.getChildren()){
-
-                    movieKeys.add(keyNode.getKey());
-
-                    int movieId = keyNode.getValue(Integer.class);
-
-                    movieIDsint.add(movieId);
-
-                    //System.out.println( "Movie IDs" + movieIDsint.toString());
-                }
-
-                System.out.println( "Movie IDs" + movieIDsint.toString());
-                System.out.println("List of user-likedMovie IDs without duplicates" + removeDuplicates(movieIDsint));
-
-                userIDsFetched = true;
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-                System.out.println("There was an error : " + error);
-            }
-        });
-    }
 
 
     @Nullable
@@ -222,8 +270,9 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
         getlikedMoviesFromFirebase();
 
-        loadMoviesIntRCV();
 
+      //  retrieveMoviesFromFB();
+        //loadMoviesIntRCV();
 
 
 //        Movie movie = new Movie("/mMWLGu9pFymqipN8yvISHsAaj72.jpg", "boob", "sket", "Loose");
@@ -245,12 +294,9 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
         movieRCV = view.findViewById(R.id.movie_RCV);
         movieRCV.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new MovieCardAdapter(getContext(), movies, this);
+        adapter = new MovieCardAdapter(getContext(), this);
         movieRCV.setAdapter(adapter);
 
-
-
-        adapter.notifyDataSetChanged();
 
 
         //fetch liked movie IDs

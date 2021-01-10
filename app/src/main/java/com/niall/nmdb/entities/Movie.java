@@ -23,6 +23,10 @@ public class Movie {
 
     }
 
+    public Movie(){
+
+    }
+
 
     public Movie(String image,String title, String rating, String language) {
 

@@ -19,15 +19,18 @@ import java.util.ArrayList;
 public class MovieCardAdapter extends RecyclerView.Adapter<MovieCardAdapter.ViewHolder>{
 
     private LayoutInflater layoutInflater;
-    private ArrayList<Movie> movieData;
+    private ArrayList<Movie> movieData = new ArrayList<>();
 
     private ViewHolder.onMovieListener onMovieListener;
 
-    public MovieCardAdapter(Context context, ArrayList<Movie> movieData, ViewHolder.onMovieListener onMovieListener){
+    public MovieCardAdapter(Context context, ViewHolder.onMovieListener onMovieListener){
         this.layoutInflater = LayoutInflater.from(context);
-        this.movieData = movieData;
+
         this.onMovieListener = onMovieListener;
     }
+
+
+
 
 
 
