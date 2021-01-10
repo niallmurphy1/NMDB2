@@ -31,7 +31,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_margin="6dp"
             app:errorEnabled="true"
 
@@ -51,7 +51,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_margin="6dp"
             app:counterEnabled="true"
             app:counterMaxLength="15"
@@ -71,7 +71,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_margin="6dp"
             android:hint="@string/password"
             app:passwordToggleEnabled="true"

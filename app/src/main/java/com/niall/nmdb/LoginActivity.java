@@ -77,9 +77,6 @@ public class LoginActivity extends AppCompatActivity {
                             db = FirebaseDatabase.getInstance().getReference().child("User");
                             String key = db.push().getKey();
 
-                            Toast.makeText(LoginActivity.this, userId,
-                                    Toast.LENGTH_LONG).show();
-
 
                             startActivity(nav);
 

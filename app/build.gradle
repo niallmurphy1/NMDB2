@@ -83,4 +83,6 @@ dependencies {
     implementation    'android.arch.lifecycle:extensions:1.1.1'
     compileOnly 'com.google.android.wearable:wearable:2.8.1'
 
+    //5 star rating tool
+
 }

@@ -6,13 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MyMoviesFragment">
 
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/search"
+        android:inputType="text"
+        app:layout_constraintTop_toTopOf="parent"
+
+
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/movie_RCV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

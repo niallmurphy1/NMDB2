@@ -2,6 +2,7 @@ package com.niall.nmdb.entities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Movie {
 
@@ -10,6 +11,7 @@ public class Movie {
     private String image;
     private String rating;
     private String language;
+    private int userRating;
 
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
@@ -77,6 +79,14 @@ public class Movie {
         this.image = image;
     }
 
+    public int getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating(int userRating) {
+        this.userRating = userRating;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -86,5 +96,21 @@ public class Movie {
                 ", rating='" + rating + '\'' +
                 ", language='" + language + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id == movie.id &&
+                Objects.equals(title, movie.title) &&
+                Objects.equals(image, movie.image) &&
+                Objects.equals(language, movie.language);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, id, image, language);
     }
 }

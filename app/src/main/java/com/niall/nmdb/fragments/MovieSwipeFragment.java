@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DiffUtil;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,8 +26,11 @@ import com.androidnetworking.interfaces.StringRequestListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.niall.nmdb.CardStackCallback;
 import com.niall.nmdb.MyViewModel;
 import com.niall.nmdb.R;
@@ -38,6 +42,8 @@ import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.Direction;
 import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
+
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,6 +72,8 @@ public class MovieSwipeFragment extends Fragment {
     private ArrayList<String> movieIds = new ArrayList<>();
 
     public Map newLikedMovie = new HashMap();
+
+
 
 
 
@@ -134,6 +142,8 @@ public class MovieSwipeFragment extends Fragment {
 
                     newLikedMovie.put(key, currentMovie.getId() );
 
+
+
                     userRef.child(userId).child("user-likedMovies").updateChildren(newLikedMovie).addOnSuccessListener(new OnSuccessListener() {
                         @Override
                         public void onSuccess(Object o) {
@@ -160,10 +170,11 @@ public class MovieSwipeFragment extends Fragment {
 
                     //TODO: allow user to rate movie, save rating to user-ratedMovies in FB with movie key and rating
 
+
                 }
                 if (direction == Direction.Left){
                     //dismiss
-                    Toast.makeText(getContext(), "Direction Left", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Direction Left", Toast.LENGTH_SHORT).show();
                 }
                 if (direction == Direction.Bottom){
                     //dismiss

@@ -20,4 +20,5 @@
     <string name="enter_new_username">Enter new Username below</string>
     <string name="change_username">Change username</string>
     <string name="register_activity">Register</string>
+    <string name="search">search...</string>
 </resources>

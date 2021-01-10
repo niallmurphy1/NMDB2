@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ccc"
+    android:background="@color/black"
     android:padding="10dp">
 
     <androidx.cardview.widget.CardView
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="4dp"
         app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -33,11 +34,11 @@
             <TextView
                 android:id="@+id/movie_title_rcv"
                 android:layout_width="0dp"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 app:layout_constraintVertical_chainStyle="spread"
                 tools:text="Fair beaners"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/movie_rating_rcv"
@@ -53,7 +54,7 @@
                 android:layout_height="28dp"
                 android:textSize="18sp"
                 android:layout_marginStart="12dp"
-
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toTopOf="@id/movie_lang_rcv"
                 app:layout_constraintVertical_chainStyle="spread"
                 app:layout_constraintTop_toBottomOf="@id/movie_title_rcv"
@@ -68,7 +69,7 @@
                 android:layout_height="31dp"
                 android:textSize="16sp"
                 android:layout_marginStart="12dp"
-
+                android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintVertical_chainStyle="spread"
                 app:layout_constraintTop_toBottomOf="@id/movie_rating_rcv"

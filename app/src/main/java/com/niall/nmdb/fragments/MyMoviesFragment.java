@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.androidnetworking.AndroidNetworking;
@@ -36,6 +39,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SplittableRandom;
@@ -60,6 +64,8 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
     private List<String> movieKeys;
 
+    private EditText searchBarEdit;
+
 
     public FirebaseDatabase database = FirebaseDatabase.getInstance();
     public DatabaseReference userFavMovies;
@@ -82,23 +88,18 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
 
 
+
         //get user-favmovieids  from firebase
         userFavMovies = database.getReference("User").child(userId).child("user-likedMovies");
 
         userMovies = database.getReference("Movie");
-        //needs to be done synchronous
 
-        //TODO: Get API to be called so that RCV is populated with movies
 
 
 
     }
 
-//    public interface DataStatus{
-//         static void dataIsLoaded(ArrayList<Movie> movies){
-//
-//         }
-//    }
+
 
     public void retrieveMoviesFromFB(){
 
@@ -111,7 +112,9 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
                 for(DataSnapshot keyNode: snapshot.getChildren()){
 
+
                     for(int i = 0; i< movieKeys.size(); i ++){
+
 
                         if(movieKeys.get(i).equals(keyNode.getKey())){
 
@@ -122,7 +125,14 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
                 }
 
 
-                System.out.println(movies.toString());
+                System.out.println("Movies w/ duplicates: " + movies.toString());
+                System.out.println("Movies w/ duplicates size : " + movies.size());
+
+
+               getRidOfDuplicates(movies);
+
+                System.out.println("Movies w/out duplicates: " + movies.toString());
+                System.out.println("Movies w/out duplicates size : " + movies.size());
 
                 adapter.setMovieData(movies);
                 adapter.notifyDataSetChanged();
@@ -134,6 +144,18 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
             }
         });
+    }
+
+    private void getRidOfDuplicates(ArrayList<Movie> movies) {
+
+
+        if(movies != null) {
+            LinkedHashSet<Movie> set = new LinkedHashSet<>(movies);
+            movies.clear();
+            movies.addAll(set);
+        }
+
+
     }
 
     public void getlikedMoviesFromFirebase(){
@@ -173,80 +195,8 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
     }
 
 
-    private void loadMoviesIntRCV() {
-
-        System.out.println("LOADMOVIEINTORCV STARTED");
-
-        System.out.println("In loadMoviesIntoRCV(), movieIDs: " + movieIDsint.toString());
-
-        for (int i = 0; i < movieIDsint.size(); i++){
-        AndroidNetworking.get("https://api.themoviedb.org/3/movie/" + movieIDsint.get(i).toString() + "?api_key=57c10a851406809ce5be1ba20e3d3430&language=en-US")
-                .addQueryParameter("limit", "1")
-                .addHeaders("token", "1234")
-                .setTag("test")
-                .setPriority(Priority.LOW)
-                .build().getAsString(new StringRequestListener() {
-            @Override
-            public void onResponse(String response) {
-
-                System.out.println("Movie Array " +   response);
-
-                List<String> movieKeys = new ArrayList<>();
 
 
-                try {
-
-                    JSONObject obj = new JSONObject(response);
-
-
-
-                        int id =  obj.getInt("id");
-                        String name = obj.getString("title");
-                        String image = obj.getString("poster_path");
-                        String rating = obj.getString("vote_average");
-                        String language = obj.getString("original_language");
-
-
-                        String imageUrl = "https://image.tmdb.org/t/p/w1280" + image;
-
-                        Movie movie = new Movie(imageUrl, name, rating, language);
-
-                        movie.setId(id);
-
-                        movies.add(movie);
-
-                        System.out.println(movie.toMap().toString());
-
-
-
-
-
-
-
-                   // System.out.println(movies);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                //DataStatus.dataIsLoaded(movies);
-                adapter.addMovies(movies);
-                adapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onError(ANError anError) {
-
-                System.out.println("error");
-            }
-        });
-
-
-        }
-
-
-    }
 
 
 
@@ -267,25 +217,11 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
         super.onViewCreated(view, savedInstanceState);
 
 
+        searchBarEdit = view.findViewById(R.id.searchBar);
+
+        setUpFilter();
 
         getlikedMoviesFromFirebase();
-
-
-      //  retrieveMoviesFromFB();
-        //loadMoviesIntRCV();
-
-
-//        Movie movie = new Movie("/mMWLGu9pFymqipN8yvISHsAaj72.jpg", "boob", "sket", "Loose");
-//        Movie movie1 = new Movie("/mMWLGu9pFymqipN8yvISHsAaj72.jpg", "boob", "sket", "Loose");
-//
-//        Movie movie2 = new Movie("/mMWLGu9pFymqipN8yvISHsAaj72.jpg", "boob", "sket", "Loose");
-//
-//        Movie movie3 = new Movie("/mMWLGu9pFymqipN8yvISHsAaj72.jpg", "boob", "sket", "Loose");
-//
-//        movies.add(movie);
-//        movies.add(movie1);
-//        movies.add(movie2);
-//        movies.add(movie3);
 
 
         System.out.println("Movies size: " + movies.size());
@@ -299,20 +235,28 @@ public class MyMoviesFragment extends Fragment implements MovieCardAdapter.ViewH
 
 
 
-        //fetch liked movie IDs
-        //System.out.println("Movie Ids with duplicates:  " + myViewModel.getMovieIDs());
 
-//        movieIDs = myViewModel.getMovieIDs();
-//
-//        if (movieIDs != null) {
-//            Set<String> set = new HashSet<>(movieIDs);
-//            movieIDs.clear();
-//            movieIDs.addAll(set);
-//
-//            System.out.println("Movie Ids without duplicates:  " + movieIDs);
-//        }
+    }
 
+    private void setUpFilter() {
 
+        searchBarEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                adapter.getFilter().filter(s.toString());
+            }
+        });
     }
 
     @Override
