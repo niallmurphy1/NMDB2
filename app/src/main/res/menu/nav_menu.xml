@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:id="@+id/map"
+        android:icon="@drawable/ic_map"
+        android:title="Cinemas near me"
+        />
+
+    <item android:id="@+id/movie_swiper"
+        android:icon="@drawable/ic_movie_fil"
+        android:title="@string/film_swipe"
+        />
+
+    <item android:id="@+id/my_movies_list"
+        android:icon="@drawable/ic_list"
+        android:title="@string/list_icon"
+        />
+
+
+</menu>
